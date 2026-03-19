@@ -14,8 +14,22 @@ Routing: OpenAI-compatible function calling
 
 import json
 import re
+import os
 from datetime import datetime
+from pathlib import Path
 from groq import Groq
+
+# ── Load .env automatically ────────────────────────────────────────────────────
+def _load_env():
+    env_path = Path(__file__).parent / ".env"
+    if env_path.exists():
+        for line in env_path.read_text().splitlines():
+            line = line.strip()
+            if line and not line.startswith("#") and "=" in line:
+                key, _, value = line.partition("=")
+                os.environ.setdefault(key.strip(), value.strip())
+
+_load_env()
 
 client = Groq()  # reads GROQ_API_KEY from env
 MODEL  = "llama-3.3-70b-versatile"
